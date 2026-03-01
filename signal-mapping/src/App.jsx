@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import {
   User,
   Activity,
@@ -20,7 +20,6 @@ import {
   FileSpreadsheet,
   X,
   AlertCircle,
-  Menu,
 } from "lucide-react";
 
 /**
@@ -29,7 +28,6 @@ import {
  * 文字: #2D2926 (深炭色)
  * 邊框: #E9E4DB (淺米色)
  * 強調: #FFBF00 (琥珀色)
- *
  * * [ 部署須知 Deployment Note ]
  * 本程式碼已針對 Production 環境優化，
  * 採用原生 Canvas API 進行圖卡繪製，無須擔心跨網域權限問題。
@@ -254,24 +252,23 @@ const copyTextToClipboard = (text) => {
 // --- [ 3. 子組件 Views ] ---
 
 const StartView = ({ userData, setUserData, onStart }) => (
-  <div className="max-w-xl mx-auto py-10 sm:py-12 px-4 sm:px-6 animate-in fade-in duration-700 text-left">
-    <div className="text-center mb-12 sm:mb-16 text-[#2D2926]">
-      <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white border border-[#E9E4DB] rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 sm:mb-10 shadow-xl">
-        <Orbit className="w-10 h-10 sm:w-12 sm:h-12" />
+  <div className="max-w-xl mx-auto py-10 md:py-12 px-5 md:px-6 animate-in fade-in duration-700 text-left">
+    <div className="text-center mb-12 md:mb-16 text-[#2D2926]">
+      <div className="w-20 h-20 md:w-24 md:h-24 bg-white border border-[#E9E4DB] rounded-[2.2rem] md:rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 md:mb-10 shadow-xl">
+        <Orbit size={40} className="md:hidden" />
+        <Orbit size={48} className="hidden md:block" />
       </div>
-      <h1 className="text-4xl sm:text-6xl font-bold tracking-tighter mb-4 sm:mb-6 leading-none">Signal Mapping™</h1>
-      <p className="text-[#8B8378] text-base sm:text-xl font-medium italic">「看見場域訊號，找出主導壓力。」</p>
+      <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 md:mb-6 leading-none">Signal Mapping™</h1>
+      <p className="text-[#8B8378] text-base md:text-xl font-medium italic">「看見場域訊號，找出主導壓力。」</p>
     </div>
 
-    <div className="bg-white p-6 sm:p-12 rounded-[2.5rem] sm:rounded-[3rem] border border-[#E9E4DB] shadow-sm space-y-8 sm:space-y-10 text-[#2D2926]">
-      <div className="space-y-6 sm:space-y-8">
+    <div className="bg-white p-7 md:p-12 rounded-[2.5rem] md:rounded-[3rem] border border-[#E9E4DB] shadow-sm space-y-8 md:space-y-10 text-[#2D2926]">
+      <div className="space-y-7 md:space-y-8 text-left">
         <div>
-          <label className="block text-[10px] font-bold text-[#A8A297] uppercase tracking-[0.2em] mb-3 sm:mb-4">
-            觀測者姓名 / 識別碼
-          </label>
+          <label className="block text-[10px] font-bold text-[#A8A297] uppercase tracking-[0.2em] mb-3 md:mb-4">觀測者姓名 / 識別碼</label>
           <input
             type="text"
-            className="w-full px-6 sm:px-8 py-4 sm:py-5 bg-[#FDFBF7] border border-[#E9E4DB] rounded-3xl focus:outline-none focus:border-[#2D2926] transition-all text-base sm:text-lg font-medium"
+            className="w-full px-6 md:px-8 py-4 md:py-5 bg-[#FDFBF7] border border-[#E9E4DB] rounded-2xl md:rounded-3xl focus:outline-none focus:border-[#2D2926] transition-all text-base md:text-lg font-medium"
             placeholder="請輸入姓名或代號"
             value={userData.name}
             onChange={(e) => setUserData({ ...userData, name: e.target.value })}
@@ -279,28 +276,27 @@ const StartView = ({ userData, setUserData, onStart }) => (
         </div>
 
         <div className="relative">
-          <label className="block text-[10px] font-bold text-[#A8A297] uppercase tracking-[0.2em] mb-3 sm:mb-4">
-            探測主題模組
-          </label>
+          <label className="block text-[10px] font-bold text-[#A8A297] uppercase tracking-[0.2em] mb-3 md:mb-4">探測主題模組</label>
           <div className="relative group">
-            <select className="w-full px-6 sm:px-8 py-4 sm:py-5 bg-[#FDFBF7] border border-[#E9E4DB] rounded-3xl focus:outline-none focus:border-[#2D2926] appearance-none cursor-default text-base sm:text-lg font-medium">
+            <select className="w-full px-6 md:px-8 py-4 md:py-5 bg-[#FDFBF7] border border-[#E9E4DB] rounded-2xl md:rounded-3xl focus:outline-none focus:border-[#2D2926] appearance-none cursor-default text-base md:text-lg font-medium">
               <option>高階共識營｜Signal Mapping™ v1</option>
             </select>
-            <div className="absolute right-5 sm:right-6 top-1/2 -translate-y-1/2 pointer-events-none text-[#A8A297]">
-              <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6" />
+            <div className="absolute right-5 md:right-6 top-1/2 -translate-y-1/2 pointer-events-none text-[#A8A297]">
+              <ChevronDown size={22} className="md:hidden" />
+              <ChevronDown size={24} className="hidden md:block" />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="space-y-6 text-sm text-[#8B8378] leading-relaxed border-y border-[#F5F2ED] py-6 sm:py-8">
-        <div className="space-y-2 sm:space-y-3">
+      <div className="space-y-6 md:space-y-8 text-sm text-[#8B8378] leading-relaxed border-y border-[#F5F2ED] py-7 md:py-8">
+        <div className="space-y-2.5">
           <h4 className="font-bold text-[#2D2926] flex items-center gap-3 tracking-widest text-xs uppercase">
             <Clock size={16} /> 探測說明
           </h4>
           <p className="pl-8">本模組包含 12 題管理場景畫面。請依據「目前真實體感」進行直覺選擇。</p>
         </div>
-        <div className="space-y-2 sm:space-y-3">
+        <div className="space-y-2.5">
           <h4 className="font-bold text-[#2D2926] flex items-center gap-3 tracking-widest text-xs uppercase">
             <ShieldCheck size={16} /> 教案互動原則
           </h4>
@@ -308,24 +304,23 @@ const StartView = ({ userData, setUserData, onStart }) => (
         </div>
       </div>
 
-      <div className="flex items-start gap-4 px-1 sm:px-2">
+      <div className="flex items-start gap-4 px-1">
         <input
           type="checkbox"
           className="mt-1.5 w-5 h-5 accent-[#2D2926] cursor-pointer"
           checked={userData.consent}
           onChange={(e) => setUserData({ ...userData, consent: e.target.checked })}
         />
-        <span className="text-xs text-[#8B8378] leading-relaxed font-medium">
-          我已閱讀並同意數據匿名性與隱私保護原則。
-        </span>
+        <span className="text-xs text-[#8B8378] leading-relaxed font-medium">我已閱讀並同意數據匿名性與隱私保護原則。</span>
       </div>
 
       <button
         disabled={!userData.name || !userData.consent}
         onClick={onStart}
-        className="w-full bg-[#2D2926] text-[#FDFBF7] py-5 sm:py-6 rounded-full font-bold text-lg sm:text-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-20 flex items-center justify-center gap-3 shadow-2xl"
+        className="w-full bg-[#2D2926] text-[#FDFBF7] py-5 md:py-6 rounded-full font-bold text-lg md:text-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-20 flex items-center justify-center gap-3 shadow-2xl"
       >
-        開始觀測 <ChevronRight size={28} />
+        開始觀測 <ChevronRight size={26} className="md:hidden" />
+        <ChevronRight size={28} className="hidden md:block" />
       </button>
     </div>
   </div>
@@ -344,14 +339,12 @@ const TestView = ({ currentQ, setCurrentQ, answers, setAnswers, onFinish }) => {
   if (!q) return null;
 
   return (
-    <div className="max-w-xl mx-auto py-10 sm:py-16 px-4 sm:px-6 animate-in slide-in-from-bottom-4 duration-700 text-[#2D2926]">
-      <div className="mb-10 sm:mb-16">
+    <div className="max-w-xl mx-auto py-10 md:py-16 px-5 md:px-6 animate-in slide-in-from-bottom-4 duration-700 text-[#2D2926]">
+      <div className="mb-10 md:mb-16">
         <div className="flex justify-between text-[10px] font-bold text-[#A8A297] uppercase tracking-[0.2em] mb-4">
           <button
             onClick={() => setCurrentQ(Math.max(0, currentQ - 1))}
-            className={`flex items-center gap-1.5 ${
-              currentQ === 0 ? "opacity-0 pointer-events-none" : "hover:text-[#2D2926] transition-colors"
-            } text-[#2D2926]`}
+            className={`flex items-center gap-1.5 ${currentQ === 0 ? "opacity-0 pointer-events-none" : "hover:text-[#2D2926] transition-colors"} text-[#2D2926]`}
           >
             <ArrowLeft size={14} /> 上一題
           </button>
@@ -363,25 +356,29 @@ const TestView = ({ currentQ, setCurrentQ, answers, setAnswers, onFinish }) => {
         </div>
       </div>
 
-      <div className="space-y-10 sm:space-y-16">
-        <h2 className="text-2xl sm:text-4xl font-bold leading-tight tracking-tight min-h-[6rem] sm:min-h-[8rem]">
+      <div className="space-y-10 md:space-y-16">
+        <h2 className="text-2xl md:text-4xl font-bold leading-tight tracking-tight min-h-[6rem] md:min-h-[8rem]">
           {q.text}
         </h2>
 
-        <div className="grid grid-cols-1 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 gap-3 md:gap-4">
           {q.opt.map((opt, i) => (
             <button
               key={i}
               onClick={() => handleSelect(i)}
-              className={`w-full text-left px-6 sm:px-10 py-5 sm:py-7 rounded-[1.75rem] sm:rounded-[2rem] border-2 transition-all flex items-center justify-between shadow-sm group ${
+              className={`w-full text-left px-6 md:px-10 py-5 md:py-7 rounded-[1.6rem] md:rounded-[2rem] border-2 transition-all flex items-center justify-between shadow-sm group ${
                 answers[currentQ] === i ? "border-[#2D2926] bg-[#FDFBF7] shadow-md" : "border-[#E9E4DB] bg-white hover:border-[#A8A297]"
               }`}
             >
-              <span className={`font-bold text-base sm:text-xl ${answers[currentQ] === i ? "text-[#2D2926]" : "text-[#4A453E]"}`}>
+              <span className={`font-bold text-base md:text-xl ${answers[currentQ] === i ? "text-[#2D2926]" : "text-[#4A453E]"}`}>
                 {opt}
               </span>
-              <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 flex items-center justify-center transition-all ${answers[currentQ] === i ? "border-[#2D2926]" : "border-[#E9E4DB]"}`}>
-                <div className={`w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-[#2D2926] transition-transform duration-500 ${answers[currentQ] === i ? "scale-100" : "scale-0"}`} />
+              <div
+                className={`w-7 h-7 md:w-8 md:h-8 rounded-full border-2 flex items-center justify-center transition-all ${
+                  answers[currentQ] === i ? "border-[#2D2926]" : "border-[#E9E4DB]"
+                }`}
+              >
+                <div className={`w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-[#2D2926] transition-transform duration-500 ${answers[currentQ] === i ? "scale-100" : "scale-0"}`} />
               </div>
             </button>
           ))}
@@ -395,9 +392,11 @@ const ResultView = ({ userData, results, showToast }) => {
   const [isExporting, setIsExporting] = useState(false);
 
   if (!results) return null;
+
   const domData = SIGNAL_NARRATIVE[results.dom] || {};
   const domName = SIGNAL_DEFS[results.dom]?.name || "";
   const domSub = SIGNAL_DEFS[results.dom]?.sub || "";
+
   const secName = SIGNAL_DEFS[results.sec]?.secName || "";
   const secSub = SIGNAL_DEFS[results.sec]?.secSub || "";
   const secData = SIGNAL_NARRATIVE[results.sec] || {};
@@ -407,12 +406,125 @@ const ResultView = ({ userData, results, showToast }) => {
   const handleCopyCode = () => {
     const text = `主=${results.dom}(${domName}) | 次=${results.sec}(${secName})`;
     const success = copyTextToClipboard(text);
-    if (success) showToast("分析訊號已複製： " + text);
-    else showToast("複製失敗，請手動抄寫：" + text);
+    showToast(success ? "分析訊號已複製： " + text : "複製失敗，請手動抄寫：" + text);
+  };
+
+  // ✅ 產出 canvas，回傳 {canvas, dataUrl, blob}
+  const buildCanvasAsset = async () => {
+    const width = 800;
+    const height = 1200;
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Canvas not supported");
+
+    ctx.textBaseline = "top";
+
+    // 1. 底色背景
+    ctx.fillStyle = "#1a1715";
+    ctx.fillRect(0, 0, width, height);
+
+    // 2. 左側裝飾線
+    ctx.fillStyle = "#ffbf00";
+    ctx.fillRect(60, 100, 6, 100);
+
+    // 3. 標題渲染
+    const titlePrefix = "深度交互鏡像｜";
+    const titleMain = `${domName} × ${secName}`;
+    const margin = 80;
+    const safeWidth = width - margin * 2;
+
+    let titleFontSize = 44;
+    ctx.font = `bold ${titleFontSize}px "PingFang TC","Microsoft JhengHei",system-ui,sans-serif`;
+    while (ctx.measureText(titlePrefix + titleMain).width > safeWidth && titleFontSize > 32) {
+      titleFontSize -= 2;
+      ctx.font = `bold ${titleFontSize}px "PingFang TC","Microsoft JhengHei",system-ui,sans-serif`;
+    }
+
+    ctx.fillStyle = "#ffffff";
+    ctx.textAlign = "left";
+    ctx.fillText(titlePrefix + titleMain, 90, 115);
+
+    ctx.font = `24px "PingFang TC","Microsoft JhengHei",system-ui,sans-serif`;
+    ctx.fillStyle = "rgba(255,255,255,0.6)";
+    ctx.fillText("場域共存張力分析", 90, 115 + titleFontSize + 15);
+
+    // 4. 中央圓角卡片
+    const cardX = 60;
+    const cardY = 250;
+    const cardW = width - 120;
+    const cardH = 700;
+    const r = 40;
+
+    ctx.fillStyle = "#24201d";
+    ctx.beginPath();
+    ctx.moveTo(cardX + r, cardY);
+    ctx.lineTo(cardX + cardW - r, cardY);
+    ctx.quadraticCurveTo(cardX + cardW, cardY, cardX + cardW, cardY + r);
+    ctx.lineTo(cardX + cardW, cardY + cardH - r);
+    ctx.quadraticCurveTo(cardX + cardW, cardY + cardH, cardX + cardW - r, cardY + cardH);
+    ctx.lineTo(cardX + r, cardY + cardH);
+    ctx.quadraticCurveTo(cardX, cardY + cardH, cardX, cardY + cardH - r);
+    ctx.lineTo(cardX, cardY + r);
+    ctx.quadraticCurveTo(cardX, cardY, cardX + r, cardY);
+    ctx.closePath();
+    ctx.fill();
+
+    // 5. 卡片內強調文字
+    ctx.fillStyle = "#ffbf00";
+    ctx.font = `bold 40px "PingFang TC","Microsoft JhengHei",system-ui,sans-serif`;
+    ctx.fillText(`${domName}  ×  ${secName}`, cardX + 60, cardY + 70);
+
+    ctx.strokeStyle = "rgba(255,255,255,0.1)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cardX + 60, cardY + 130);
+    ctx.lineTo(cardX + cardW - 60, cardY + 130);
+    ctx.stroke();
+
+    // 6. 核心描述內容
+    const paragraph = `常見畫面是：${getCombinationEffect(results.dom, results.sec)}`;
+    ctx.fillStyle = "rgba(255,255,255,0.95)";
+    ctx.font = `32px "PingFang TC","Microsoft JhengHei",system-ui,sans-serif`;
+
+    const contentMaxWidth = cardW - 120;
+    const lineHeight = 55;
+    let drawY = cardY + 180;
+
+    let line = "";
+    for (let i = 0; i < paragraph.length; i++) {
+      const testLine = line + paragraph[i];
+      const testWidth = ctx.measureText(testLine).width;
+      if (testWidth > contentMaxWidth && i > 0) {
+        ctx.fillText(line, cardX + 60, drawY);
+        line = paragraph[i];
+        drawY += lineHeight;
+      } else {
+        line = testLine;
+      }
+    }
+    ctx.fillText(line, cardX + 60, drawY);
+
+    // 7. 品牌與浮水印
+    ctx.font = `14px "PingFang TC","Microsoft JhengHei",system-ui,sans-serif`;
+    ctx.fillStyle = "rgba(255,255,255,0.3)";
+    ctx.textAlign = "left";
+    ctx.fillText("SIGNAL MAPPING™ COLLECTIVE INTERACTION", 70, height - 60);
+    ctx.textAlign = "right";
+    ctx.fillText(`OBSERVER: ${String(userData.name || "THINKER")}`, width - 70, height - 60);
+
+    const dataUrl = canvas.toDataURL("image/png", 1.0);
+
+    const blob = await new Promise((resolve) => {
+      canvas.toBlob((b) => resolve(b), "image/png", 1.0);
+    });
+
+    return { canvas, dataUrl, blob };
   };
 
   /**
-   * 原生 Canvas 繪圖引擎
+   * ✅ 手機下載：優先 Web Share（可存到相簿/檔案），否則開新分頁長按存圖
    */
   const handleDownloadImage = async () => {
     if (isExporting) return;
@@ -420,114 +532,56 @@ const ResultView = ({ userData, results, showToast }) => {
     showToast("正在生成鏡像圖卡...");
 
     try {
-      const width = 800;
-      const height = 1200;
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext("2d");
+      const { dataUrl, blob } = await buildCanvasAsset();
 
-      ctx.textBaseline = "top";
+      // 1) 支援 Web Share API（iOS 16+ / 部分 Android）
+      const canShareFiles =
+        typeof navigator !== "undefined" &&
+        navigator.share &&
+        blob &&
+        typeof File !== "undefined" &&
+        // iOS/Chrome 多數情況 navigator.canShare 可用；沒有也不阻擋
+        (!navigator.canShare || navigator.canShare({ files: [new File([blob], "SignalMapping.png", { type: "image/png" })] }));
 
-      // 1. 底色背景
-      ctx.fillStyle = "#1a1715";
-      ctx.fillRect(0, 0, width, height);
-
-      // 2. 左側裝飾線
-      ctx.fillStyle = "#ffbf00";
-      ctx.fillRect(60, 100, 6, 100);
-
-      // 3. 標題渲染
-      const titlePrefix = "深度交互鏡像｜";
-      const titleMain = `${domName} × ${secName}`;
-      const margin = 80;
-      const safeWidth = width - margin * 2;
-
-      let titleFontSize = 44;
-      ctx.font = `bold ${titleFontSize}px "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif`;
-      while (ctx.measureText(titlePrefix + titleMain).width > safeWidth && titleFontSize > 32) {
-        titleFontSize -= 2;
-        ctx.font = `bold ${titleFontSize}px "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif`;
+      if (canShareFiles) {
+        const file = new File([blob], `SignalMapping_${userData.name || "User"}.png`, { type: "image/png" });
+        await navigator.share({
+          files: [file],
+          title: "Signal Mapping™",
+          text: "鏡像圖卡已生成，可選擇儲存到照片或分享至 Padlet。",
+        });
+        showToast("已開啟分享面板：可儲存到照片或分享");
+        return;
       }
 
-      ctx.fillStyle = "#ffffff";
-      ctx.textAlign = "left";
-      ctx.fillText(titlePrefix + titleMain, 90, 115);
-
-      ctx.font = `24px "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif`;
-      ctx.fillStyle = "rgba(255,255,255,0.6)";
-      ctx.fillText("場域共存張力分析", 90, 115 + titleFontSize + 15);
-
-      // 4. 中央圓角卡片
-      const cardX = 60;
-      const cardY = 250;
-      const cardW = width - 120;
-      const cardH = 700;
-      const r = 40;
-
-      ctx.fillStyle = "#24201d";
-      ctx.beginPath();
-      ctx.moveTo(cardX + r, cardY);
-      ctx.lineTo(cardX + cardW - r, cardY);
-      ctx.quadraticCurveTo(cardX + cardW, cardY, cardX + cardW, cardY + r);
-      ctx.lineTo(cardX + cardW, cardY + cardH - r);
-      ctx.quadraticCurveTo(cardX + cardW, cardY + cardH, cardX + cardW - r, cardY + cardH);
-      ctx.lineTo(cardX + r, cardY + cardH);
-      ctx.quadraticCurveTo(cardX, cardY + cardH, cardX, cardY + cardH - r);
-      ctx.lineTo(cardX, cardY + r);
-      ctx.quadraticCurveTo(cardX, cardY, cardX + r, cardY);
-      ctx.closePath();
-      ctx.fill();
-
-      // 5. 卡片內強調文字
-      ctx.fillStyle = "#ffbf00";
-      ctx.font = `bold 40px "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif`;
-      ctx.fillText(`${domName}  ×  ${secName}`, cardX + 60, cardY + 70);
-
-      ctx.strokeStyle = "rgba(255,255,255,0.1)";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(cardX + 60, cardY + 130);
-      ctx.lineTo(cardX + cardW - 60, cardY + 130);
-      ctx.stroke();
-
-      // 6. 核心描述內容
-      const paragraph = `常見畫面是：${getCombinationEffect(results.dom, results.sec)}`;
-      ctx.fillStyle = "rgba(255,255,255,0.95)";
-      ctx.font = `32px "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif`;
-
-      const contentMaxWidth = cardW - 120;
-      const lineHeight = 55;
-      let drawY = cardY + 180;
-
-      let line = "";
-      for (let i = 0; i < paragraph.length; i++) {
-        let testLine = line + paragraph[i];
-        let testWidth = ctx.measureText(testLine).width;
-        if (testWidth > contentMaxWidth && i > 0) {
-          ctx.fillText(line, cardX + 60, drawY);
-          line = paragraph[i];
-          drawY += lineHeight;
-        } else {
-          line = testLine;
-        }
+      // 2) 不支援：開新分頁顯示圖片（iOS 最穩），用長按儲存
+      const win = window.open();
+      if (win) {
+        win.document.write(`
+          <html>
+            <head>
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <title>Signal Mapping™ Image</title>
+              <style>
+                body{margin:0;background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;}
+                img{max-width:100%;height:auto;display:block;}
+                .tip{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
+                  background:rgba(0,0,0,0.65);color:#fff;padding:10px 14px;border-radius:999px;
+                  font: 600 12px system-ui;letter-spacing:.06em}
+              </style>
+            </head>
+            <body>
+              <img src="${dataUrl}" alt="Signal Mapping" />
+              <div class="tip">手機請長按圖片 → 儲存到照片</div>
+            </body>
+          </html>
+        `);
+        showToast("已開啟圖片：手機請長按圖片儲存");
+      } else {
+        // 被瀏覽器阻擋彈窗時：退回直接導向 dataUrl
+        window.location.href = dataUrl;
+        showToast("已開啟圖片：手機請長按圖片儲存");
       }
-      ctx.fillText(line, cardX + 60, drawY);
-
-      // 7. 品牌與浮水印
-      ctx.font = `14px "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif`;
-      ctx.fillStyle = "rgba(255,255,255,0.3)";
-      ctx.textAlign = "left";
-      ctx.fillText("SIGNAL MAPPING™ COLLECTIVE INTERACTION", 70, height - 60);
-      ctx.textAlign = "right";
-      ctx.fillText(`OBSERVER: ${String(userData.name || "THINKER")}`, width - 70, height - 60);
-
-      const link = document.createElement("a");
-      link.download = `SignalMapping_${userData.name || "User"}.png`;
-      link.href = canvas.toDataURL("image/png", 1.0);
-      link.click();
-
-      showToast("圖卡已下載！請上傳至 Padlet 分享。");
     } catch (err) {
       console.error(err);
       showToast("圖卡生成失敗，建議使用螢幕截圖。");
@@ -537,164 +591,185 @@ const ResultView = ({ userData, results, showToast }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-10 sm:py-12 px-4 sm:px-6 animate-in fade-in duration-1000 space-y-10 sm:space-y-12 pb-24 sm:pb-32 text-left text-[#2D2926]">
-      <section className="bg-[#2D2926] text-white p-8 sm:p-12 md:p-16 rounded-[2.5rem] sm:rounded-[3.5rem] shadow-2xl relative overflow-hidden">
+    <div className="max-w-4xl mx-auto py-10 md:py-12 px-5 md:px-6 animate-in fade-in duration-1000 space-y-10 md:space-y-12 pb-24 md:pb-32 text-left text-[#2D2926]">
+      <section className="bg-[#2D2926] text-white p-8 md:p-16 rounded-[2.8rem] md:rounded-[3.5rem] shadow-2xl relative overflow-hidden">
         <Orbit className="absolute -top-16 -right-16 w-64 h-64 opacity-10 animate-pulse text-white" />
-        <div className="relative z-10 space-y-10 sm:space-y-12">
+        <div className="relative z-10 space-y-8 md:space-y-12">
           <span className="text-[10px] font-bold uppercase tracking-[0.4em] bg-white/10 px-5 py-2 rounded-full border border-white/10 backdrop-blur-md inline-block">
             個人場域鏡像結果 Personal Mirror
           </span>
-          <div className="space-y-8 sm:space-y-12">
-            <h2 className="text-2xl sm:text-4xl md:text-6xl font-bold tracking-tighter leading-[1.15]">
+
+          <div className="space-y-8 md:space-y-12">
+            <h2 className="text-2xl md:text-6xl font-bold tracking-tighter leading-[1.15]">
               目前你的工作場域以
               <br />
-              <span className="text-amber-400 underline underline-offset-[10px] sm:underline-offset-[12px] decoration-4 decoration-amber-400/20">
+              <span className="text-amber-400 underline underline-offset-[10px] md:underline-offset-[12px] decoration-4 decoration-amber-400/20">
                 「{domName}」
               </span>
               為主要特徵，
               <br />
-              並伴隨一定程度的 <span className="opacity-80">「{secName}」</span>。
+              並伴隨一定程度的<span className="opacity-80">「{secName}」</span>。
             </h2>
-            <div className="bg-white/5 p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] border border-white/10 backdrop-blur-sm">
-              <p className="text-lg sm:text-2xl font-light leading-relaxed opacity-90 italic">「{oneLineExplain}」</p>
+            <div className="bg-white/5 p-7 md:p-10 rounded-[2.2rem] md:rounded-[2.5rem] border border-white/10 backdrop-blur-sm">
+              <p className="text-base md:text-2xl font-light leading-relaxed opacity-90 italic">「{oneLineExplain}」</p>
             </div>
           </div>
         </div>
       </section>
 
-      <div className="bg-white rounded-[2.5rem] sm:rounded-[3.5rem] border border-[#E9E4DB] shadow-sm overflow-hidden divide-y divide-[#F5F2ED]">
-        <div className="p-8 sm:p-12 md:p-16 space-y-10 sm:space-y-12 text-[#2D2926]">
+      <div className="bg-white rounded-[2.8rem] md:rounded-[3.5rem] border border-[#E9E4DB] shadow-sm overflow-hidden divide-y divide-[#F5F2ED]">
+        <div className="p-8 md:p-16 space-y-10 md:space-y-12 text-[#2D2926]">
           <div className="space-y-2">
             <div className="flex items-center gap-5">
               <div className="w-1.5 h-10 bg-[#2D2926] rounded-full" />
-              <h3 className="text-2xl sm:text-3xl font-bold tracking-tight">主狀態解讀｜{domName}</h3>
+              <h3 className="text-2xl md:text-3xl font-bold tracking-tight">主狀態解讀｜{domName}</h3>
             </div>
-            <p className="pl-7 text-[#8B8378] font-bold text-base sm:text-lg italic">{domSub}</p>
+            <p className="pl-7 text-[#8B8378] font-bold text-base md:text-lg italic">{domSub}</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-16">
-            <section className="space-y-6 sm:space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
+            <section className="space-y-6 md:space-y-8">
               <h4 className="text-[11px] font-bold text-[#A8A297] uppercase tracking-[0.3em]">代表資訊</h4>
-              <ul className="space-y-5 sm:space-y-6 font-medium">
+              <ul className="space-y-4 md:space-y-6 font-medium">
                 {(domData.info || []).map((line, i) => (
-                  <li key={i} className="flex gap-5 items-start text-base sm:text-xl leading-snug">
+                  <li key={i} className="flex gap-5 items-start text-base md:text-xl leading-snug">
                     <span className="text-[#A8A297] text-sm mt-1.5 opacity-40 font-mono">0{i + 1} /</span> {String(line)}
                   </li>
                 ))}
               </ul>
             </section>
 
-            <section className="space-y-6 sm:space-y-8">
+            <section className="space-y-6 md:space-y-8">
               <h4 className="text-[11px] font-bold text-[#A8A297] uppercase tracking-[0.3em]">結構視角</h4>
-              <ul className="space-y-5 sm:space-y-6 font-medium">
+              <ul className="space-y-4 md:space-y-6 font-medium">
                 {(domData.symptoms || []).map((line, i) => (
-                  <li key={i} className="flex gap-5 items-start text-base sm:text-xl text-[#8B8378] leading-snug font-bold">
+                  <li key={i} className="flex gap-5 items-start text-base md:text-xl text-[#8B8378] leading-snug font-bold">
                     <div className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-3 shrink-0" /> {String(line)}
                   </li>
                 ))}
               </ul>
             </section>
           </div>
+
+          {/* ✅ 加回：主狀態反思 */}
+          <div className="p-7 md:p-10 bg-[#FDFBF7] rounded-[2.2rem] md:rounded-[2.5rem] border border-[#E9E4DB]">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="text-amber-500" size={20} />
+              <h4 className="text-base md:text-lg font-bold text-[#2D2926]">反思問題（主狀態）</h4>
+            </div>
+            <p className="mt-4 text-sm md:text-base text-[#4A453E] leading-relaxed font-medium italic">
+              「{String(domData.reflection || "")}」
+            </p>
+          </div>
         </div>
 
-        <div className="p-8 sm:p-12 md:p-16 space-y-10 sm:space-y-12 bg-[#FDFBF7]/30 text-[#2D2926]">
+        <div className="p-8 md:p-16 space-y-10 md:space-y-12 bg-[#FDFBF7]/30 text-[#2D2926]">
           <div className="space-y-2">
             <div className="flex items-center gap-5">
               <div className="w-1.5 h-10 bg-[#8B8378] rounded-full" />
-              <h3 className="text-2xl sm:text-3xl font-bold tracking-tight">次狀態補充｜{secName}</h3>
+              <h3 className="text-2xl md:text-3xl font-bold tracking-tight">次狀態補充｜{secName}</h3>
             </div>
-            <p className="pl-7 text-[#8B8378] font-bold text-base sm:text-lg italic">{secSub}</p>
+            <p className="pl-7 text-[#8B8378] font-bold text-base md:text-lg italic">{secSub}</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {(secData.symptoms || []).map((line, i) => (
               <div
                 key={i}
-                className="p-6 sm:p-8 bg-white rounded-3xl border border-[#E9E4DB]/50 text-base sm:text-lg font-bold text-[#4A453E] leading-relaxed shadow-sm hover:translate-y-[-2px] transition-transform"
+                className="p-6 md:p-8 bg-white rounded-2xl md:rounded-3xl border border-[#E9E4DB]/50 text-sm md:text-lg font-bold text-[#4A453E] leading-relaxed shadow-sm hover:translate-y-[-2px] transition-transform"
               >
                 {String(line)}
               </div>
             ))}
           </div>
+
+          {/* ✅ 加回：次狀態反思 */}
+          <div className="p-7 md:p-10 bg-white rounded-[2.2rem] md:rounded-[2.5rem] border border-[#E9E4DB] shadow-sm">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="text-amber-500" size={20} />
+              <h4 className="text-base md:text-lg font-bold text-[#2D2926]">反思問題（次狀態）</h4>
+            </div>
+            <p className="mt-4 text-sm md:text-base text-[#4A453E] leading-relaxed font-medium italic">
+              「{String(secData.reflection || "")}」
+            </p>
+          </div>
         </div>
 
-        <div className="p-8 sm:p-12 md:p-16 space-y-10 sm:space-y-12 bg-[#2D2926] text-white overflow-hidden relative">
-          <div className="relative z-10 space-y-8 sm:space-y-10">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-6">
+        <div className="p-8 md:p-16 space-y-10 md:space-y-12 bg-[#2D2926] text-white overflow-hidden relative">
+          <div className="relative z-10 space-y-8 md:space-y-10">
+            <div className="flex justify-between items-start">
               <div className="space-y-2">
                 <div className="flex items-center gap-5">
                   <div className="w-1.5 h-10 bg-amber-400 rounded-full" />
-                  <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-                    深度交互鏡像｜{domName} × {secName}
-                  </h3>
+                  <h3 className="text-xl md:text-3xl font-bold tracking-tight text-white">深度交互鏡像｜{domName} × {secName}</h3>
                 </div>
-                <p className="pl-7 text-white/60 font-bold text-base sm:text-lg italic">場域共存張力分析</p>
+                <p className="pl-7 text-white/60 font-bold text-base md:text-lg italic">場域共存張力分析</p>
               </div>
-              <div className="sm:text-right opacity-40 self-start">
-                <Orbit size={48} />
-              </div>
+              <div className="text-right opacity-40"><Orbit size={40} className="md:hidden" /><Orbit size={48} className="hidden md:block" /></div>
             </div>
 
-            <div className="p-6 sm:p-10 bg-white/5 rounded-[2.5rem] sm:rounded-[3rem] border border-white/10 backdrop-blur-xl shadow-inner">
-              <p className="text-lg sm:text-3xl font-light leading-relaxed text-white/90">
+            <div className="p-7 md:p-10 bg-white/5 rounded-[2.6rem] md:rounded-[3rem] border border-white/10 backdrop-blur-xl shadow-inner">
+              <p className="text-lg md:text-3xl font-light leading-relaxed text-white/90">
                 <span className="font-bold text-amber-400">{domName}</span> + <span className="font-bold opacity-80 text-white">{secName}</span>
                 <br />
-                <span className="mt-6 sm:mt-8 block opacity-90 leading-relaxed italic border-t border-white/10 pt-6 sm:pt-8 text-base sm:text-2xl font-medium">
+                <span className="mt-6 md:mt-8 block opacity-90 leading-relaxed italic border-t border-white/10 pt-6 md:pt-8 text-base md:text-2xl font-medium">
                   「常見畫面是：{getCombinationEffect(results.dom, results.sec)}」
                 </span>
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 pt-4 opacity-30 border-t border-white/5">
-              <span className="text-[10px] font-bold uppercase tracking-[0.4em]">Signal Mapping™ Collective Interaction</span>
-              <span className="text-[10px] font-bold uppercase tracking-[0.4em]">{String(userData.name || "Thinker")}</span>
+            <div className="flex justify-between items-center pt-4 opacity-30 border-t border-white/5">
+              <span className="text-[10px] font-bold uppercase tracking-[0.5em]">Signal Mapping™ Collective Interaction</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.5em]">{String(userData.name || "Thinker")}</span>
             </div>
           </div>
         </div>
 
-        <div className="p-8 sm:p-12 bg-[#FDFBF7] space-y-8 sm:space-y-10">
+        <div className="p-8 md:p-12 bg-[#FDFBF7] space-y-8 md:space-y-10">
           <div className="flex items-center gap-3">
             <AlertCircle className="text-amber-500" size={20} />
-            <h4 className="text-base sm:text-lg font-bold text-[#2D2926]">Padlet 互動任務</h4>
+            <h4 className="text-base md:text-lg font-bold text-[#2D2926]">Padlet 互動任務</h4>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <button
               onClick={handleDownloadImage}
               disabled={isExporting}
-              className="flex flex-col items-center gap-4 p-6 sm:p-8 bg-white border-2 border-[#E9E4DB] rounded-[2rem] sm:rounded-[2.5rem] hover:border-[#2D2926] hover:bg-zinc-50 transition-all shadow-sm group active:scale-95 disabled:opacity-50"
+              className="flex flex-col items-center gap-4 p-7 md:p-8 bg-white border-2 border-[#E9E4DB] rounded-[2.2rem] md:rounded-[2.5rem] hover:border-[#2D2926] hover:bg-zinc-50 transition-all shadow-sm group active:scale-95 disabled:opacity-50"
             >
-              <div className="w-14 h-14 bg-[#2D2926] rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform">
-                <Download size={28} />
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-[#2D2926] rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                <Download size={24} className="md:hidden" />
+                <Download size={28} className="hidden md:block" />
               </div>
               <div className="text-center">
-                <span className="block font-bold text-base sm:text-lg">1. 下載鏡像圖卡</span>
-                <span className="text-xs text-[#8B8378] mt-1">捕捉深層鏡像結果，準備上傳 Padlet</span>
+                <span className="block font-bold text-base md:text-lg">1. 下載鏡像圖卡</span>
+                <span className="text-xs text-[#8B8378] mt-1">手機會開啟圖片：長按儲存 / 或使用分享儲存到照片</span>
               </div>
             </button>
 
             <button
               onClick={handleCopyCode}
-              className="flex flex-col items-center gap-4 p-6 sm:p-8 bg-white border-2 border-[#E9E4DB] rounded-[2rem] sm:rounded-[2.5rem] hover:border-[#2D2926] hover:bg-zinc-50 transition-all shadow-sm group active:scale-95"
+              className="flex flex-col items-center gap-4 p-7 md:p-8 bg-white border-2 border-[#E9E4DB] rounded-[2.2rem] md:rounded-[2.5rem] hover:border-[#2D2926] hover:bg-zinc-50 transition-all shadow-sm group active:scale-95"
             >
-              <div className="w-14 h-14 bg-amber-400 rounded-2xl flex items-center justify-center text-[#2D2926] group-hover:scale-110 transition-transform">
-                <Copy size={28} />
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-amber-400 rounded-2xl flex items-center justify-center text-[#2D2926] group-hover:scale-110 transition-transform">
+                <Copy size={24} className="md:hidden" />
+                <Copy size={28} className="hidden md:block" />
               </div>
               <div className="text-center">
-                <span className="block font-bold text-base sm:text-lg">2. 複製分析訊號</span>
+                <span className="block font-bold text-base md:text-lg">2. 複製分析訊號</span>
                 <span className="text-xs text-[#8B8378] mt-1">複製代碼，準備貼在 Padlet 留言區</span>
               </div>
             </button>
           </div>
 
-          <div className="p-5 sm:p-6 bg-amber-50 rounded-2xl border border-amber-100">
+          <div className="p-6 bg-amber-50 rounded-2xl border border-amber-100">
             <p className="text-xs text-amber-800 leading-relaxed font-medium">
-              💡 操作建議：請點擊上方兩個按鈕，將下載的圖片上傳至 Padlet，並在圖片留言處貼上複製的訊號代碼，以完成組織全景匯流。
+              💡 操作建議：請先下載圖片並上傳至 Padlet，再在圖片留言處貼上複製的訊號代碼，以完成組織全景匯流。
             </p>
           </div>
         </div>
 
-        <div className="p-8 sm:p-10 bg-[#FDFBF7] flex justify-center">
+        <div className="p-8 md:p-10 bg-[#FDFBF7] flex justify-center">
           <button
             onClick={() => window.location.reload()}
             className="text-[10px] font-bold text-[#A8A297] uppercase tracking-widest hover:text-[#2D2926] transition-all underline underline-offset-8"
@@ -743,14 +818,14 @@ const OrgView = ({ records, setRecords, aggregate, showToast }) => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto py-10 sm:py-12 px-4 sm:px-6 animate-in fade-in duration-1000 space-y-10 sm:space-y-12 pb-24 sm:pb-32 text-left text-[#2D2926]">
-      <section className="bg-white rounded-[2.5rem] sm:rounded-[3rem] border border-[#E9E4DB] shadow-sm overflow-hidden divide-y divide-[#F5F2ED]">
-        <div className="p-6 sm:p-10 flex justify-between items-center bg-[#FDFBF7]/50">
+    <div className="max-w-5xl mx-auto py-10 md:py-12 px-5 md:px-6 animate-in fade-in duration-1000 space-y-10 md:space-y-12 pb-24 md:pb-32 text-left text-[#2D2926]">
+      <section className="bg-white rounded-[2.8rem] md:rounded-[3rem] border border-[#E9E4DB] shadow-sm overflow-hidden divide-y divide-[#F5F2ED]">
+        <div className="p-7 md:p-10 flex justify-between items-center bg-[#FDFBF7]/50">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 bg-[#2D2926] rounded-xl flex items-center justify-center text-white">
-              <Settings2 size={24} />
+              <Settings2 size={22} />
             </div>
-            <h2 className="text-lg sm:text-2xl font-bold tracking-tight">組織聚合管理控制台 (Admin Only)</h2>
+            <h2 className="text-xl md:text-2xl font-bold tracking-tight">組織聚合管理控制台 (Admin Only)</h2>
           </div>
           <button
             onClick={() => setShowAdmin(!showAdmin)}
@@ -761,8 +836,8 @@ const OrgView = ({ records, setRecords, aggregate, showToast }) => {
         </div>
 
         {showAdmin && (
-          <div className="p-6 sm:p-10 space-y-10 sm:space-y-12">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-12">
+          <div className="p-7 md:p-10 space-y-10 md:space-y-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
               <div className="space-y-6">
                 <h4 className="text-[10px] font-bold text-[#A8A297] uppercase tracking-[0.3em] flex items-center gap-2">
                   <Plus size={14} /> 單筆數據填入
@@ -809,7 +884,7 @@ const OrgView = ({ records, setRecords, aggregate, showToast }) => {
                 <h4 className="text-[10px] font-bold text-[#A8A297] uppercase tracking-[0.3em] flex items-center gap-2">
                   <UploadCloud size={14} /> CSV 批量匯入
                 </h4>
-                <div className="p-6 sm:p-8 border-2 border-dashed border-[#E9E4DB] rounded-[2rem] sm:rounded-[2.5rem] bg-[#FDFBF7]/50 flex flex-col items-center justify-center space-y-4 group transition-all">
+                <div className="p-7 md:p-8 border-2 border-dashed border-[#E9E4DB] rounded-[2.2rem] md:rounded-[2.5rem] bg-[#FDFBF7]/50 flex flex-col items-center justify-center space-y-4 group transition-all">
                   <FileSpreadsheet className="text-[#A8A297]" size={40} />
                   <div className="text-center">
                     <p className="text-sm font-bold">選取匯入檔案</p>
@@ -830,7 +905,10 @@ const OrgView = ({ records, setRecords, aggregate, showToast }) => {
               <div className="flex justify-between items-center">
                 <h4 className="text-[11px] font-bold text-[#A8A297] uppercase tracking-[0.3em]">匯流數據池 ({records.length} 筆)</h4>
                 {records.length > 0 && (
-                  <button onClick={() => setRecords([])} className="text-[10px] font-bold text-red-400 hover:text-red-600 flex items-center gap-1 transition-colors">
+                  <button
+                    onClick={() => setRecords([])}
+                    className="text-[10px] font-bold text-red-400 hover:text-red-600 flex items-center gap-1 transition-colors"
+                  >
                     清空數據
                   </button>
                 )}
@@ -841,7 +919,9 @@ const OrgView = ({ records, setRecords, aggregate, showToast }) => {
                     key={i}
                     className="px-4 py-2 bg-[#FDFBF7] border border-[#E9E4DB] rounded-full flex items-center gap-3 group animate-in zoom-in-50 duration-300"
                   >
-                    <span className="text-[10px] font-bold font-mono text-[#2D2926]">{r.dom}/{r.sec}</span>
+                    <span className="text-[10px] font-bold font-mono text-[#2D2926]">
+                      {r.dom}/{r.sec}
+                    </span>
                     <button
                       onClick={() => setRecords((prev) => prev.filter((_, idx) => idx !== i))}
                       className="text-[#A8A297] hover:text-red-400 transition-colors"
@@ -857,34 +937,34 @@ const OrgView = ({ records, setRecords, aggregate, showToast }) => {
       </section>
 
       {!aggregate ? (
-        <div className="py-16 sm:py-24 text-center space-y-6 sm:space-y-8 animate-in fade-in duration-700">
+        <div className="py-20 md:py-24 text-center space-y-8 animate-in fade-in duration-700">
           <BarChart3 className="mx-auto text-[#E9E4DB]" size={80} />
-          <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-[#2D2926]">等待數據匯流...</h2>
-          <p className="text-base sm:text-xl text-[#8B8378] font-medium">
-            個人測驗採 Padlet 轉 CSV 回報，請由管理者匯入數據生成報表。
-          </p>
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#2D2926]">等待數據匯流...</h2>
+          <p className="text-base md:text-xl text-[#8B8378] font-medium">個人測驗採 Padlet 轉 CSV 回報，請由管理者匯入數據生成報表。</p>
         </div>
       ) : (
-        <div className="space-y-10 sm:space-y-12 animate-in fade-in duration-1000">
-          <section className="bg-[#2D2926] text-white p-8 sm:p-12 md:p-16 rounded-[2.5rem] sm:rounded-[3.5rem] shadow-2xl relative overflow-hidden">
+        <div className="space-y-10 md:space-y-12 animate-in fade-in duration-1000">
+          <section className="bg-[#2D2926] text-white p-8 md:p-16 rounded-[2.8rem] md:rounded-[3.5rem] shadow-2xl relative overflow-hidden">
             <Users className="absolute -top-16 -right-16 w-80 h-80 opacity-5 text-white" />
-            <div className="relative z-10 space-y-8 sm:space-y-10">
+            <div className="relative z-10 space-y-8 md:space-y-10">
               <span className="text-[10px] font-bold uppercase tracking-[0.4em] bg-white/10 px-5 py-2 rounded-full border border-white/10 inline-block">
                 組織場域標定 Organizational Profile
               </span>
-              <div className="space-y-8 sm:space-y-12">
-                <h2 className="text-2xl sm:text-4xl md:text-6xl font-bold tracking-tighter leading-tight">
+
+              <div className="space-y-8 md:space-y-12">
+                <h2 className="text-2xl md:text-6xl font-bold tracking-tighter leading-tight">
                   目前組織場域以
                   <br />
-                  <span className="text-amber-400 underline underline-offset-[10px] sm:underline-offset-[12px] decoration-4 decoration-amber-400/20">
+                  <span className="text-amber-400 underline underline-offset-[10px] md:underline-offset-[12px] decoration-4 decoration-amber-400/20">
                     「{SIGNAL_DEFS[aggregate.dom]?.name || ""}」
                   </span>
                   為核心特徵，
                   <br />
                   並伴隨一定程度的<span className="opacity-80">「{SIGNAL_DEFS[aggregate.sec]?.secName || ""}」</span>。
                 </h2>
-                <div className="bg-white/5 p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] border border-white/10 backdrop-blur-sm font-medium">
-                  <p className="text-lg sm:text-2xl font-light leading-relaxed opacity-90 italic">
+
+                <div className="bg-white/5 p-7 md:p-10 rounded-[2.2rem] md:rounded-[2.5rem] border border-white/10 backdrop-blur-sm font-medium">
+                  <p className="text-base md:text-2xl font-light leading-relaxed opacity-90 italic">
                     「{SIGNAL_DEFS[aggregate.dom]?.orgMeaning || ""}」
                   </p>
                 </div>
@@ -892,34 +972,32 @@ const OrgView = ({ records, setRecords, aggregate, showToast }) => {
             </div>
           </section>
 
-          <div className="bg-white rounded-[2.5rem] sm:rounded-[3.5rem] border border-[#E9E4DB] shadow-sm overflow-hidden divide-y divide-[#F5F2ED]">
-            <div className="p-8 sm:p-12 md:p-16 space-y-10 sm:space-y-12 text-[#2D2926]">
+          <div className="bg-white rounded-[2.8rem] md:rounded-[3.5rem] border border-[#E9E4DB] shadow-sm overflow-hidden divide-y divide-[#F5F2ED]">
+            <div className="p-8 md:p-16 space-y-10 md:space-y-12 text-[#2D2926]">
               <div className="flex items-center gap-5">
                 <div className="w-1.5 h-10 bg-[#2D2926] rounded-full" />
-                <h3 className="text-2xl sm:text-3xl font-bold tracking-tight">
-                  組織主狀態解讀｜{SIGNAL_DEFS[aggregate.dom]?.name || ""}
-                </h3>
+                <h3 className="text-2xl md:text-3xl font-bold tracking-tight">組織主狀態解讀｜{SIGNAL_DEFS[aggregate.dom]?.name || ""}</h3>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-16">
-                <section className="space-y-6 sm:space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
+                <section className="space-y-6 md:space-y-8">
                   <h4 className="text-[11px] font-bold text-[#A8A297] uppercase tracking-[0.3em]">代表結構特徵</h4>
-                  <ul className="space-y-5 sm:space-y-6 font-bold">
+                  <ul className="space-y-4 md:space-y-6 font-bold">
                     {(SIGNAL_NARRATIVE[aggregate.dom]?.info || []).map((line, i) => (
-                      <li key={i} className="flex gap-5 items-start text-base sm:text-xl leading-snug">
+                      <li key={i} className="flex gap-5 items-start text-base md:text-xl leading-snug">
                         <span className="text-[#A8A297] text-sm mt-1.5 opacity-40 font-mono">/</span> {String(line)}
                       </li>
                     ))}
                   </ul>
                 </section>
 
-                <section className="space-y-6 sm:space-y-8">
+                <section className="space-y-6 md:space-y-8">
                   <h4 className="text-[11px] font-bold text-[#A8A297] uppercase tracking-[0.3em]">可能風險軌跡</h4>
-                  <ul className="space-y-5 sm:space-y-6 font-medium text-[#8B8378]">
-                    <li className="flex gap-5 items-start text-base sm:text-xl leading-snug font-bold">
+                  <ul className="space-y-4 md:space-y-6 font-medium text-[#8B8378]">
+                    <li className="flex gap-5 items-start text-base md:text-xl leading-snug font-bold">
                       <Activity size={20} className="mt-1.5 shrink-0 opacity-30 text-[#2D2926]" /> 系統性決策成本緩步攀升
                     </li>
-                    <li className="flex gap-5 items-start text-base sm:text-xl leading-snug font-bold">
+                    <li className="flex gap-5 items-start text-base md:text-xl leading-snug font-bold">
                       <Activity size={20} className="mt-1.5 shrink-0 opacity-30 text-[#2D2926]" /> 長期戰略目標易被短線重排稀釋
                     </li>
                   </ul>
@@ -927,12 +1005,12 @@ const OrgView = ({ records, setRecords, aggregate, showToast }) => {
               </div>
             </div>
 
-            <div className="p-8 sm:p-12 md:p-16 space-y-10 bg-[#FDFBF7]/30 text-center">
-              <h4 className="text-[11px] font-bold text-[#A8A297] uppercase tracking-[0.4em] mb-10 sm:mb-12">
+            <div className="p-8 md:p-16 space-y-10 bg-[#FDFBF7]/30 text-center">
+              <h4 className="text-[11px] font-bold text-[#A8A297] uppercase tracking-[0.4em] mb-10 md:mb-12">
                 組織場域訊號權重分佈 (N={aggregate.total})
               </h4>
 
-              <div className="flex justify-center items-end gap-8 sm:gap-16 h-56 sm:h-64 border-b border-[#E9E4DB] pb-2">
+              <div className="flex justify-center items-end gap-10 md:gap-16 h-56 md:h-64 border-b border-[#E9E4DB] pb-2">
                 {["PC", "ED", "HF", "LA"].map((k) => {
                   const weight = aggregate.allScores[k] || 0;
                   const maxVal = Math.max(...Object.values(aggregate.allScores)) || 1;
@@ -941,9 +1019,11 @@ const OrgView = ({ records, setRecords, aggregate, showToast }) => {
                   const isSec = k === aggregate.sec;
 
                   return (
-                    <div key={k} className="flex flex-col items-center gap-5 sm:gap-6 group">
-                      <div className="flex flex-col items-center gap-4 relative w-16 sm:w-20">
-                        <div className={`text-xs font-black transition-all duration-1000 ${isDom ? "text-[#2D2926]" : "text-[#8B8378]"}`}>{weight}</div>
+                    <div key={k} className="flex flex-col items-center gap-5 md:gap-6 group">
+                      <div className="flex flex-col items-center gap-3 md:gap-4 relative w-16 md:w-20">
+                        <div className={`text-xs font-black transition-all duration-1000 ${isDom ? "text-[#2D2926]" : "text-[#8B8378]"}`}>
+                          {weight}
+                        </div>
                         <div
                           className={`w-full rounded-t-3xl transition-all duration-1000 ease-out shadow-2xl relative ${
                             isDom ? "bg-[#2D2926]" : isSec ? "bg-[#8B8378]" : "bg-[#E9E4DB]"
@@ -953,7 +1033,7 @@ const OrgView = ({ records, setRecords, aggregate, showToast }) => {
                           {isDom && <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-400 w-2 h-2 rounded-full ring-4 ring-amber-400/20" />}
                         </div>
                       </div>
-                      <span className={`text-[10px] sm:text-xs font-bold transition-colors ${isDom ? "text-[#2D2926]" : "text-[#A8A297]"}`}>
+                      <span className={`text-xs font-bold transition-colors ${isDom ? "text-[#2D2926]" : "text-[#A8A297]"}`}>
                         {SIGNAL_DEFS[k]?.tag || ""}
                       </span>
                     </div>
@@ -961,7 +1041,7 @@ const OrgView = ({ records, setRecords, aggregate, showToast }) => {
                 })}
               </div>
 
-              <div className="space-y-4 mt-6 sm:mt-8">
+              <div className="space-y-4 mt-8">
                 <p className="text-[11px] text-[#8B8378] font-medium leading-relaxed max-w-sm mx-auto italic">
                   註：圖表根據主訊號 (2分) 與次訊號 (1分) 加權顯示，以反映真實場域張力分佈。
                 </p>
@@ -983,7 +1063,20 @@ export default function App() {
   const [currentQ, setCurrentQ] = useState(0);
   const [toast, setToast] = useState({ show: false, msg: "" });
   const [records, setRecords] = useState([]);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const sync = () => setIsMobile(!!mq.matches);
+    sync();
+    if (mq.addEventListener) mq.addEventListener("change", sync);
+    else mq.addListener(sync);
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener("change", sync);
+      else mq.removeListener(sync);
+    };
+  }, []);
 
   const showToast = (msg) => {
     setToast({ show: true, msg: String(msg || "") });
@@ -993,92 +1086,65 @@ export default function App() {
   const personalResult = useMemo(() => calculatePersonal(answers), [answers]);
   const orgAggregate = useMemo(() => calculateOrgAggregate(records), [records]);
 
-  // 手機模式下：切換頁面就收起側欄，避免遮擋內容
-  const goView = (next) => {
-    setView(next);
-    setSidebarOpen(false);
-  };
-
-  return (
-    <div className="min-h-screen bg-[#FDFBF7] flex font-sans text-[#2D2926]">
-      {/* Toast：手機降低 top，避免被瀏覽器列遮住 */}
-      {toast.show && (
-        <div className="fixed top-5 sm:top-12 left-1/2 -translate-x-1/2 bg-[#2D2926] text-white px-6 sm:px-10 py-4 sm:py-5 rounded-full text-xs sm:text-sm font-bold shadow-2xl z-[120] border border-white/10 text-center animate-in fade-in slide-in-from-top-6 max-w-[92vw]">
-          {toast.msg}
-        </div>
-      )}
-
-      {/* Mobile Top Bar */}
-      <header className="md:hidden fixed top-0 left-0 right-0 z-[110] bg-white border-b border-[#F5F2ED]">
-        <div className="h-16 px-4 flex items-center justify-between">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="w-11 h-11 rounded-2xl border border-[#E9E4DB] bg-[#FDFBF7] flex items-center justify-center active:scale-95 transition"
-            aria-label="Open menu"
-          >
-            <Menu size={18} />
-          </button>
-
+  // ✅ 手機版：上方功能列（個人/組織）
+  const MobileTopBar = () => (
+    <div className="md:hidden fixed top-0 left-0 right-0 z-[60] bg-white/95 backdrop-blur border-b border-[#E9E4DB]">
+      <div className="px-4 pt-[max(env(safe-area-inset-top),12px)] pb-3">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 bg-[#2D2926] rounded-xl shadow-lg flex items-center justify-center text-white">
               <Orbit size={18} />
             </div>
             <div className="leading-tight">
-              <div className="font-bold tracking-tight text-base">Think Studio</div>
+              <div className="font-bold text-base tracking-tight text-[#2D2926]">Think Studio</div>
               <div className="text-[10px] text-[#A8A297] font-mono uppercase tracking-tight">Signal Mapping™ v1</div>
             </div>
           </div>
 
+          <div className="text-right">
+            <div className="text-[10px] text-[#A8A297] font-mono uppercase tracking-tight">v1.0.4 - LOCAL</div>
+          </div>
+        </div>
+
+        <div className="mt-3 grid grid-cols-2 gap-3">
           <button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="text-[10px] font-bold text-[#A8A297] uppercase tracking-widest hover:text-[#2D2926] transition-colors"
+            onClick={() => setView("start")}
+            className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
+              view !== "org" ? "bg-[#FDFBF7] border border-[#E9E4DB] shadow-sm text-[#2D2926]" : "bg-white border border-[#F5F2ED] text-[#A8A297]"
+            }`}
           >
-            Top
+            <Activity size={18} /> 個人鏡像
+          </button>
+          <button
+            onClick={() => setView("org")}
+            className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
+              view === "org" ? "bg-[#FDFBF7] border border-[#E9E4DB] shadow-sm text-[#2D2926]" : "bg-white border border-[#F5F2ED] text-[#A8A297]"
+            }`}
+          >
+            <Users size={18} /> 組織聚合
           </button>
         </div>
-      </header>
+      </div>
+    </div>
+  );
 
-      {/* Mobile overlay */}
-      {sidebarOpen && (
-        <button
-          className="md:hidden fixed inset-0 bg-black/30 z-[105]"
-          onClick={() => setSidebarOpen(false)}
-          aria-label="Close menu overlay"
-        />
+  return (
+    <div className="min-h-screen bg-[#FDFBF7] font-sans text-[#2D2926] overflow-x-hidden">
+      {/* Toast：手機避開瀏海 */}
+      {toast.show && (
+        <div className="fixed left-1/2 -translate-x-1/2 z-[100] border border-white/10 text-center animate-in fade-in slide-in-from-top-6
+                        top-[max(env(safe-area-inset-top),12px)] md:top-12
+                        bg-[#2D2926] text-white px-6 md:px-10 py-4 md:py-5 rounded-full text-xs md:text-sm font-bold shadow-2xl">
+          {toast.msg}
+        </div>
       )}
 
-      {/* Sidebar (desktop fixed, mobile drawer) */}
-      <aside
-        className={[
-          "w-80 border-r border-[#E9E4DB] h-screen left-0 top-0 flex flex-col bg-white z-[115] text-left shadow-sm",
-          "fixed md:fixed",
-          "transition-transform duration-300 ease-out",
-          "md:translate-x-0",
-          sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
-        ].join(" ")}
-      >
-        {/* Mobile drawer header */}
-        <div className="md:hidden p-4 border-b border-[#F5F2ED] flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[#2D2926] rounded-xl shadow-lg flex items-center justify-center text-white">
-              <Orbit size={20} />
-            </div>
-            <div>
-              <div className="font-bold text-lg tracking-tight">Think Studio</div>
-              <div className="text-[10px] text-[#A8A297] font-mono uppercase tracking-tight">v1.0.4 - Local Mode</div>
-            </div>
-          </div>
-          <button
-            onClick={() => setSidebarOpen(false)}
-            className="w-11 h-11 rounded-2xl border border-[#E9E4DB] bg-[#FDFBF7] flex items-center justify-center active:scale-95 transition"
-            aria-label="Close menu"
-          >
-            <X size={18} />
-          </button>
-        </div>
+      {/* Mobile top bar */}
+      <MobileTopBar />
 
-        {/* Desktop header */}
-        <div className="hidden md:block p-10 border-b border-[#F5F2ED]">
+      {/* Desktop sidebar（md+） */}
+      <aside className="hidden md:flex w-80 border-r border-[#E9E4DB] h-screen fixed left-0 top-0 flex-col bg-white z-50 shadow-sm">
+        <div className="p-10 border-b border-[#F5F2ED]">
           <div className="flex items-center gap-4 text-[#2D2926]">
             <div className="w-10 h-10 bg-[#2D2926] rounded-xl shadow-lg flex items-center justify-center text-white">
               <Orbit size={24} />
@@ -1087,19 +1153,18 @@ export default function App() {
           </div>
         </div>
 
-        <nav className="flex-1 p-6 md:p-8 space-y-6 text-[#2D2926]">
+        <nav className="flex-1 p-8 space-y-6 text-[#2D2926]">
           <div className="space-y-3">
             <button
-              onClick={() => goView("start")}
+              onClick={() => setView("start")}
               className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-sm font-bold transition-all ${
                 view !== "org" ? "bg-[#FDFBF7] border border-[#E9E4DB] shadow-sm" : "text-[#A8A297] hover:text-[#2D2926]"
               }`}
             >
               <Activity size={20} /> 個人鏡像模式
             </button>
-
             <button
-              onClick={() => goView("org")}
+              onClick={() => setView("org")}
               className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-sm font-bold transition-all ${
                 view === "org" ? "bg-[#FDFBF7] border border-[#E9E4DB] shadow-sm" : "text-[#A8A297] hover:text-[#2D2926]"
               }`}
@@ -1108,7 +1173,7 @@ export default function App() {
             </button>
           </div>
 
-          <div className="p-6 md:p-8 mt-8 md:mt-12 rounded-[2rem] md:rounded-[2.5rem] border border-[#F5F2ED] bg-zinc-50/40 space-y-4">
+          <div className="p-8 mt-12 rounded-[2.5rem] border border-[#F5F2ED] bg-zinc-50/40 space-y-4">
             <h4 className="text-[11px] font-bold text-[#A8A297] uppercase tracking-[0.2em]">Signal Mapping™ v1</h4>
             <p className="text-[11px] text-[#8B8378] leading-relaxed font-medium">
               本平台採「本地運算」模式。個人數據不自動上傳，請透過 Padlet 進行教案互動匯流。
@@ -1116,7 +1181,7 @@ export default function App() {
           </div>
         </nav>
 
-        <div className="p-6 md:p-10 border-t border-[#F5F2ED] flex items-center gap-5 text-[#2D2926]">
+        <div className="p-10 border-t border-[#F5F2ED] flex items-center gap-5 text-[#2D2926]">
           <div className="w-12 h-12 rounded-full border-2 border-[#E9E4DB] overflow-hidden flex items-center justify-center bg-[#FDFBF7] shadow-sm">
             <User size={24} />
           </div>
@@ -1127,20 +1192,22 @@ export default function App() {
         </div>
       </aside>
 
-      {/* Main: mobile needs top padding for header; desktop keeps ml-80 */}
-      <main className="flex-1 flex flex-col justify-center min-h-screen relative overflow-x-hidden bg-[#FDFBF7] pt-16 md:pt-0 md:ml-80">
-        {view === "start" && <StartView userData={userData} setUserData={setUserData} onStart={() => goView("test")} />}
-        {view === "test" && (
-          <TestView
-            currentQ={currentQ}
-            setCurrentQ={setCurrentQ}
-            answers={answers}
-            setAnswers={setAnswers}
-            onFinish={() => goView("result")}
-          />
-        )}
-        {view === "result" && <ResultView userData={userData} results={personalResult} showToast={showToast} />}
-        {view === "org" && <OrgView records={records} setRecords={setRecords} aggregate={orgAggregate} showToast={showToast} />}
+      {/* Main */}
+      <main
+        className={`
+          flex flex-col justify-center min-h-screen relative bg-[#FDFBF7] overflow-x-hidden
+          px-0
+          md:ml-80
+          pt-28 md:pt-0
+        `}
+      >
+        {/* 手機：讓內容不要被 top bar 壓住，並保持寬度滿版 */}
+        <div className="w-full">
+          {view === "start" && <StartView userData={userData} setUserData={setUserData} onStart={() => setView("test")} />}
+          {view === "test" && <TestView currentQ={currentQ} setCurrentQ={setCurrentQ} answers={answers} setAnswers={setAnswers} onFinish={() => setView("result")} />}
+          {view === "result" && <ResultView userData={userData} results={personalResult} showToast={showToast} />}
+          {view === "org" && <OrgView records={records} setRecords={setRecords} aggregate={orgAggregate} showToast={showToast} />}
+        </div>
       </main>
     </div>
   );
