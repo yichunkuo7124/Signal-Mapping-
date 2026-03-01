@@ -1096,7 +1096,7 @@ export default function App() {
               <Orbit size={18} />
             </div>
             <div className="leading-tight">
-              <div className="font-bold text-base tracking-tight text-[#2D2926]">Think Studio</div>
+              <div className="font-bold text-base tracking-tight text-[#2D2926]">TURNCLOUD</div>
               <div className="text-[10px] text-[#A8A297] font-mono uppercase tracking-tight">Signal Mapping™ v1</div>
             </div>
           </div>
