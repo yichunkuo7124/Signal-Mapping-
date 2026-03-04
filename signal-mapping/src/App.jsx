@@ -1277,7 +1277,7 @@ export default function App() {
             <div className="w-10 h-10 bg-[#2D2926] rounded-xl shadow-lg flex items-center justify-center text-white">
               <Orbit size={24} />
             </div>
-            <span className="font-bold text-2xl tracking-tighter">Think Studio</span>
+            <span className="font-bold text-2xl tracking-tighter">TURNCLOUD</span>
           </div>
         </div>
 
