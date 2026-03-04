@@ -652,71 +652,108 @@ const ResultView = ({ userData, results, showToast }) => {
   };
 
   /**
-   * ✅ 手機下載：優先 Web Share（可存到相簿/檔案），否則開新分頁長按存圖
-   */
-  const handleDownloadImage = async () => {
-    if (isExporting) return;
-    setIsExporting(true);
-    showToast("正在生成鏡像圖卡...");
+ * ✅ 下載鏡像圖卡（桌機：直接下載；手機：優先 Web Share，否則開新分頁長按存圖）
+ */
+const handleDownloadImage = async () => {
+  if (isExporting) return;
+  setIsExporting(true);
+  showToast("正在生成鏡像圖卡...");
 
-    try {
-      const { dataUrl, blob } = await buildCanvasAsset();
+  try {
+    const { dataUrl, blob } = await buildCanvasAsset();
+    const filename = `SignalMapping_${userData.name || "User"}.png`;
 
-      // 1) 支援 Web Share API（iOS 16+ / 部分 Android）
-      const canShareFiles =
-        typeof navigator !== "undefined" &&
-        navigator.share &&
-        blob &&
-        typeof File !== "undefined" &&
-        // iOS/Chrome 多數情況 navigator.canShare 可用；沒有也不阻擋
-        (!navigator.canShare || navigator.canShare({ files: [new File([blob], "SignalMapping.png", { type: "image/png" })] }));
+    // ✅ 0) 桌機：直接下載儲存（不跳分享視窗）
+    // 用 coarse pointer / UA 做保守判斷：多數桌機為 false、手機為 true
+    const isMobileDevice =
+      (typeof window !== "undefined" &&
+        window.matchMedia &&
+        window.matchMedia("(pointer: coarse)").matches) ||
+      (typeof navigator !== "undefined" &&
+        /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || ""));
 
-      if (canShareFiles) {
-        const file = new File([blob], `SignalMapping_${userData.name || "User"}.png`, { type: "image/png" });
-        await navigator.share({
-          files: [file],
-          title: "Signal Mapping™",
-          text: "鏡像圖卡已生成，可選擇儲存到照片或分享至 Padlet。",
-        });
-        showToast("已開啟分享面板：可儲存到照片或分享");
+    if (!isMobileDevice) {
+      // 以 Blob 觸發下載（Chrome / Edge / Firefox / Safari(較新)）
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        showToast("已下載鏡像圖卡");
         return;
       }
 
-      // 2) 不支援：開新分頁顯示圖片（iOS 最穩），用長按儲存
-      const win = window.open();
-      if (win) {
-        win.document.write(`
-          <html>
-            <head>
-              <meta name="viewport" content="width=device-width, initial-scale=1" />
-              <title>Signal Mapping™ Image</title>
-              <style>
-                body{margin:0;background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;}
-                img{max-width:100%;height:auto;display:block;}
-                .tip{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
-                  background:rgba(0,0,0,0.65);color:#fff;padding:10px 14px;border-radius:999px;
-                  font: 600 12px system-ui;letter-spacing:.06em}
-              </style>
-            </head>
-            <body>
-              <img src="${dataUrl}" alt="Signal Mapping" />
-              <div class="tip">手機請長按圖片 → 儲存到照片</div>
-            </body>
-          </html>
-        `);
-        showToast("已開啟圖片：手機請長按圖片儲存");
-      } else {
-        // 被瀏覽器阻擋彈窗時：退回直接導向 dataUrl
-        window.location.href = dataUrl;
-        showToast("已開啟圖片：手機請長按圖片儲存");
-      }
-    } catch (err) {
-      console.error(err);
-      showToast("圖卡生成失敗，建議使用螢幕截圖。");
-    } finally {
-      setIsExporting(false);
+      // fallback：沒有 blob 就用 dataUrl
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      showToast("已下載鏡像圖卡");
+      return;
     }
-  };
+
+    // ✅ 1) 手機：支援 Web Share API（iOS 16+ / 部分 Android）
+    const canShareFiles =
+      typeof navigator !== "undefined" &&
+      navigator.share &&
+      blob &&
+      typeof File !== "undefined" &&
+      (!navigator.canShare ||
+        navigator.canShare({
+          files: [new File([blob], filename, { type: "image/png" })],
+        }));
+
+    if (canShareFiles) {
+      const file = new File([blob], filename, { type: "image/png" });
+      await navigator.share({
+        files: [file],
+        title: "Signal Mapping™",
+        text: "鏡像圖卡已生成，可選擇儲存到照片或分享至 Padlet。",
+      });
+      showToast("已開啟分享面板：可儲存到照片或分享");
+      return;
+    }
+
+    // ✅ 2) 手機 fallback：開新分頁顯示圖片（iOS 最穩），用長按儲存
+    const win = window.open();
+    if (win) {
+      win.document.write(`
+        <html>
+          <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <title>Signal Mapping™ Image</title>
+            <style>
+              body{margin:0;background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;}
+              img{max-width:100%;height:auto;display:block;}
+              .tip{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
+                background:rgba(0,0,0,0.65);color:#fff;padding:10px 14px;border-radius:999px;
+                font: 600 12px system-ui;letter-spacing:.06em}
+            </style>
+          </head>
+          <body>
+            <img src="${dataUrl}" alt="Signal Mapping" />
+            <div class="tip">手機請長按圖片 → 儲存到照片</div>
+          </body>
+        </html>
+      `);
+      showToast("已開啟圖片：手機請長按圖片儲存");
+    } else {
+      window.location.href = dataUrl;
+      showToast("已開啟圖片：手機請長按圖片儲存");
+    }
+  } catch (err) {
+    console.error(err);
+    showToast("圖卡生成失敗，建議使用螢幕截圖。");
+  } finally {
+    setIsExporting(false);
+  }
+};
 
   return (
     <div className="max-w-4xl mx-auto py-10 md:py-12 px-5 md:px-6 animate-in fade-in duration-1000 space-y-10 md:space-y-12 pb-24 md:pb-32 text-left text-[#2D2926]">
@@ -1277,7 +1314,7 @@ export default function App() {
             <div className="w-10 h-10 bg-[#2D2926] rounded-xl shadow-lg flex items-center justify-center text-white">
               <Orbit size={24} />
             </div>
-            <span className="font-bold text-2xl tracking-tighter">TURNCLOUD</span>
+            <span className="font-bold text-2xl tracking-tighter">Think Studio</span>
           </div>
         </div>
 
